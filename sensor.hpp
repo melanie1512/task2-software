@@ -31,6 +31,38 @@ private:
     std::map<int, float>airq;
     std::map<int, float>uvrad;
     std::map<int, float>traff;
+    
+    Accum calculate(std::map<int,float>mp){
+        std::vector<float>dp(mp.size(), 0);
+        std::vector<int> start_indices(mp.size(), 0);
+
+        dp[0] = mp.begin()->second;
+        start_indices[0] = mp.begin()->first;
+
+        float ans = dp[0];
+        int i = 1; 
+
+        int best_start = mp.begin()->first, best_end = mp.begin()->first;
+        int current_start = mp.begin()->first;
+        for (auto ele: mp) {
+            if (ele.second > ele.second + dp[i - 1]){
+                dp[i] = ele.second;
+                current_start = ele.first;
+            }
+
+            start_indices[i] = current_start;
+
+            if (dp[i] > ans) {
+                ans = dp[i];
+                best_start = start_indices[i];
+                best_end = ele.first;
+            }
+            i++;
+        }
+        Accum highest(ans, best_start, best_end);
+        return highest;
+    }
+    
 public:
     SensorManager(){};
 
@@ -56,13 +88,13 @@ public:
     Accum get_highest_accumulated(std::string type_of){
         if (type_of == "AIRQUALITY"){
             if (airq.size() == 0) return Accum(-1, -1 ,-1);
-            return Accum(airq.begin()->first, airq.begin()->second, airq.begin()->second);
+            return calculate(airq);
         } else if (type_of == "ULTRAVIOLETRADIATION") {
             if (uvrad.size() == 0) return Accum(-1, -1 ,-1);
-            return Accum(uvrad.begin()->first, uvrad.begin()->second, uvrad.begin()->second);
+            return calculate(uvrad);
         } else if (type_of == "TRAFFIC"){
             if (traff.size() == 0) return Accum(-1, -1 ,-1);
-            return Accum(traff.begin()->first, traff.begin()->second, traff.begin()->second);
+            return calculate(traff);
         }
         return Accum(-1, -1 ,-1);
     }

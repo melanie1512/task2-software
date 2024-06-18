@@ -17,18 +17,26 @@ class Accum(BaseModel):
 
 @app.put("/register_one", response_model = Sensor)
 async def register_one(sensor: Sensor):
-    example.add_sensor(sensor)
+    sensor_cpp = example.Sensor(sensor.timestamp, sensor.type_of_sensor, sensor.read)
+    example.add_sensor(sensor_cpp)
     return sensor
 
 @app.put("/register_many", response_model = List[Sensor])
 async def register_many(sensor_list: List[Sensor]):
     for sensor in sensor_list:
-        example.add_sensor(sensor)
+        sensor_cpp = example.Sensor(sensor.timestamp, sensor.type_of_sensor, sensor.read)
+        example.add_sensor(sensor_cpp)
     return sensor_list
 
 @app.get("/highest_accumulated", response_model = Accum)
 def highest_accumulated(type_of: str):
-    return example.highest_accumulated(type_of)
+    accum_cpp = example.highest_accumulated(type_of)
+    ans = Accum(
+            highest_accumulated_value=accum_cpp.get_highest_accumulated_value(),
+            from_value=accum_cpp.get_from_value(),
+            to=accum_cpp.get_to()
+        )
+    return ans
 
 
 if __name__ == "__main__":

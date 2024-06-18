@@ -12,7 +12,10 @@ PYBIND11_MODULE(example, m){
         .def("get_read", &Sensor::get_read);
 
     py::class_<Accum>(m, "Accum")
-        .def(py::init<float, int, int>());
+        .def(py::init<float, int, int>())
+        .def("get_highest_accumulated_value", &Accum::get_highest_accumulated_value)
+        .def("get_from_value", &Accum::get_from_value)
+        .def("get_to", &Accum::get_to);
 
     py::class_<SensorManager>(m, "SensorManager")
         .def(py::init<>())
