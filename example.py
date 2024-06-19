@@ -29,7 +29,7 @@ async def register_many(sensor_list: List[Sensor]):
     return sensor_list
 
 @app.get("/highest_accumulated", response_model = Accum)
-def highest_accumulated(type_of: str):
+async def highest_accumulated(type_of: str):
     accum_cpp = example.highest_accumulated(type_of)
     ans = Accum(
             highest_accumulated_value=accum_cpp.get_highest_accumulated_value(),

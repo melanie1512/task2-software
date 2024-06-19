@@ -1,6 +1,5 @@
 #include "sensor.hpp"
 
-// Create a global instance of SensorManager
 SensorManager sensor_manager;
 
 void add_sensor(Sensor sensor) {

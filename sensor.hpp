@@ -27,39 +27,33 @@ public:
 };
 
 class SensorManager{
-private:
+public:
     std::map<int, float>airq;
     std::map<int, float>uvrad;
     std::map<int, float>traff;
     
     Accum calculate(std::map<int,float>mp){
-        std::vector<float>dp(mp.size(), 0);
-        std::vector<int> start_indices(mp.size(), 0);
-
-        dp[0] = mp.begin()->second;
-        start_indices[0] = mp.begin()->first;
-
-        float ans = dp[0];
-        int i = 1; 
-
-        int best_start = mp.begin()->first, best_end = mp.begin()->first;
-        int current_start = mp.begin()->first;
-        for (auto ele: mp) {
-            if (ele.second > ele.second + dp[i - 1]){
-                dp[i] = ele.second;
-                current_start = ele.first;
+        auto it = mp.begin();
+        float current_max = it->second;
+        float global_max = it->second;
+        int start = 0, end = 0, temp_start = 0;
+        
+        for (auto ite = it++; ite != mp.end(); ite++) {
+            if (ite->second > current_max + ite->second) {
+                current_max = ite->second;
+                temp_start = ite->first;
+            } else {
+                current_max += ite->second;
             }
-
-            start_indices[i] = current_start;
-
-            if (dp[i] > ans) {
-                ans = dp[i];
-                best_start = start_indices[i];
-                best_end = ele.first;
+            
+            if (current_max > global_max) {
+                global_max = current_max;
+                start = temp_start;
+                end = ite->first;
             }
-            i++;
         }
-        Accum highest(ans, best_start, best_end);
+
+        Accum highest(global_max, start, end);
         return highest;
     }
     
