@@ -145,3 +145,4 @@ htmlcov/
 
 # Pytest
 .pytest_cache/
+*.gcov
